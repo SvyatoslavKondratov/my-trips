@@ -2,8 +2,9 @@ import { AllTripsCardType } from "@/app/types/card-types";
 import { Grid, Link, Typography } from "@mui/material";
 import Image from "next/image";
 
-export default function AllTripsCard(data: Pick<AllTripsCardType, "title" | "description" | "photo_url">) {
-    const { title, description, photo_url } = data
+export default function AllTripsCard(
+    data: Pick<AllTripsCardType, "title" | "description" | "photo_url"> &  {openTripDetails: () => void}) {
+    const { title, description, photo_url, openTripDetails } = data
     return(
         <Grid
             flexDirection="row"
@@ -33,14 +34,14 @@ export default function AllTripsCard(data: Pick<AllTripsCardType, "title" | "des
                     style={{ borderTopLeftRadius: 8, borderBottomLeftRadius: 8}}
                 />
             </Grid>     
-            <Grid alignItems="flex-start" flexDirection="column" container item md={8} ml={2} sm={8} xs={5}>
-                <Typography variant="h5" mb={2}>{title}</Typography>
+            <Grid alignItems="flex-start" flexDirection="column" container item md={8} ml={2} sm={8} xs={5} gap={2} m={2}>
+                <Typography variant="h5">{title}</Typography>
                 <Typography variant="body2">{description}</Typography>
-                <Grid flexDirection="row" container justifyContent="space-between" alignItems="center" mt={2} gap={1}>
+                <Grid flexDirection="row" container justifyContent="space-between" alignItems="center" gap={1}>
                     <Link
                         component="button"
                         variant="body2"
-                        onClick={() => {}}
+                        onClick={openTripDetails}
                         underline='always'
                         >
                         See trip details
