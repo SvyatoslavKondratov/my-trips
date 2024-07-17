@@ -3,8 +3,8 @@ import { Grid, Link, Typography } from "@mui/material";
 import Image from "next/image";
 
 export default function AllTripsCard(
-    data: Pick<AllTripsCardType, "title" | "description" | "photo_url"> &  {openTripDetails: () => void}) {
-    const { title, description, photo_url, openTripDetails } = data
+    data: Pick<AllTripsCardType, "title" | "description" | "photo_url"> &  {openTripDetails: () => void, onDelete: () => void}) {
+    const { title, description, photo_url, openTripDetails, onDelete } = data 
     return(
         <Grid
             flexDirection="row"
@@ -14,8 +14,7 @@ export default function AllTripsCard(
                 borderWidth: 1,
                 borderStyle: 'solid', 
                 borderRadius: 2,
-                borderColor: 'lightGray',   
-                maxHeight: 206,
+                borderColor: 'lightGray', 
                 maxWidth: 928,        
             }}
         >
@@ -36,11 +35,11 @@ export default function AllTripsCard(
             </Grid>     
             <Grid alignItems="flex-start" flexDirection="column" container item md={8} ml={2} sm={8} xs={5} gap={2} m={2}>
                 <Typography variant="h5">{title}</Typography>
-                <Typography variant="body2">{description}</Typography>
+                <Typography variant="subtitle2">{description}</Typography>
                 <Grid flexDirection="row" container justifyContent="space-between" alignItems="center" gap={1}>
                     <Link
                         component="button"
-                        variant="body2"
+                        variant="subtitle2"
                         onClick={openTripDetails}
                         underline='always'
                         >
@@ -49,7 +48,7 @@ export default function AllTripsCard(
                         <Grid flexDirection="row" justifyContent="flex-end" alignItems="center">
                             <Link
                             component="button"
-                            variant="body2"
+                            variant="subtitle2"
                             onClick={() => {}}
                             underline='always'
                             sx={{ marginRight: 2}}
@@ -58,8 +57,8 @@ export default function AllTripsCard(
                             </Link>
                             <Link
                                 component="button"
-                                variant="body2"
-                                onClick={() => {}}
+                                variant="subtitle2"
+                                onClick={() => onDelete()}
                                 underline='always'
                                 >
                                 Delete

@@ -2,7 +2,7 @@
 import * as React from 'react';
 import {Box, CircularProgress, Grid, Stack} from '@mui/material';
 import AllTripsCard from '../components/cards/all/all-trips-card';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AllTripsCardType, CardStatus } from '../types/card-types';
 import { TripDetails } from '../components/trip-details/trip-details';
 import { useState, useEffect } from 'react';
@@ -13,12 +13,45 @@ export default function Landing() {
 		queryKey: ['getAllTrips'],
 		queryFn: async () => (await fetch('https://my-json-server.typicode.com/mariosanz92/dream-travels-data/travels')).json(),
 	});
+
+	const queryClient = new QueryClient()
+    //TODO use hooks!
+    const mutation = useMutation({ 
+        mutationFn: async (data: {id: number }) => { 
+        const { id } = data
+        //TODO move to config
+        const response = await fetch(`https://my-json-server.typicode.com/mariosanz92/dream-travels-data/travels/${id}`, {
+            method: 'DELETE',
+            body: JSON.stringify({
+                id,
+            }),
+            headers: {
+              'Content-type': 'application/json; charset=UTF-8',
+            },
+          })
+		  return id;
+        },
+        onSuccess: (responseId) => {
+            queryClient.setQueriesData(
+                { queryKey: ['getAllTrips'] },
+                data?.filter(({ id }) => id !== responseId),
+            )   
+			// TODO fix this ugly hack since no update need to fetch and cache trips for getAllTrips or create something else
+			setFilteredData(data?.filter(({ id }) => id !== responseId))      
+        },
+        onError : (error) => {
+            // TODO log error
+            console.log('Error', error)
+        }})
+	
 	const [isTripDetailsOpened, setOpenTripDetails] = useState(false);
 	const [openTripId, setOpenTripId] = useState<string|undefined>();
 	const [filteredData, setFilteredData] = useState<AllTripsCardType[]|undefined>(data) 
 
 	useEffect(() => {
-		setFilteredData(data)
+		if(data) {
+			setFilteredData(data)
+		}
 	}, [data?.length])
 
 	//TODO handle error in providers
@@ -64,6 +97,7 @@ export default function Landing() {
 							setOpenTripDetails(true)
 							setOpenTripId(id+title)
 						}}
+						onDelete={() => mutation.mutate({id})}
 					/> )}
 			</Grid>
 			<TripDetails

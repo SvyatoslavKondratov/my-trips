@@ -9,7 +9,7 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 package-lock.json
-yarn-lock
+yarn.lock
 
 # Dependency directories
 node_modules/

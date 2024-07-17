@@ -7,7 +7,7 @@ export enum CardStatus {
 export type Itinerary = {
     day: number;
     location: string;
-    descrtiption: string;
+    description: string;
 }
 
 export type AllTripsCardType = {
@@ -16,5 +16,5 @@ export type AllTripsCardType = {
     description: string;
     photo_url: string;
     status: CardStatus;
-    itinerary: Itinerary
+    itinerary: Itinerary[]
 }
