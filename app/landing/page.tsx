@@ -1,8 +1,8 @@
 'use client';
 import * as React from 'react';
-import {Box, CircularProgress, Grid, Stack} from '@mui/material';
+import {Box, CircularProgress, Grid} from '@mui/material';
 import AllTripsCard from '../components/cards/all/all-trips-card';
-import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { AllTripsCardType, CardStatus } from '../types/card-types';
 import { TripDetails } from '../components/trip-details/trip-details';
 import { useState, useEffect } from 'react';
@@ -20,7 +20,7 @@ export default function Landing() {
         mutationFn: async (data: {id: number }) => { 
         const { id } = data
         //TODO move to config
-        const response = await fetch(`https://my-json-server.typicode.com/mariosanz92/dream-travels-data/travels/${id}`, {
+        await fetch(`https://my-json-server.typicode.com/mariosanz92/dream-travels-data/travels/${id}`, {
             method: 'DELETE',
             body: JSON.stringify({
                 id,
@@ -32,8 +32,8 @@ export default function Landing() {
 		  return id;
         },
         onSuccess: (responseId) => {
-            queryClient.setQueriesData(
-                { queryKey: ['getAllTrips'] },
+            queryClient.setQueryData(
+                ['getAllTrips'],
                 data?.filter(({ id }) => id !== responseId),
             )   
 			// TODO fix this ugly hack since no update need to fetch and cache trips for getAllTrips or create something else
@@ -56,6 +56,7 @@ export default function Landing() {
 
 	//TODO handle error in providers
 
+	//TODO reconsider this
 	if(isLoading) {
 		return < CircularProgress size={20} />
 	}
@@ -108,7 +109,8 @@ export default function Landing() {
 						setOpenTripId(undefined)
 					}
 				}
-				openTripId={openTripId} />
+				openTripId={openTripId}
+			/>
 		</Box>
 	);
 }

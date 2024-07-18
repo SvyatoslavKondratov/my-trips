@@ -5,6 +5,7 @@ import Image from "next/image";
 import { TripTimeline } from "../triptimeline/trip-timeline";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { useDialog } from "@/app/hooks/useDialog";
 
 
 type TripDetails = {
@@ -16,6 +17,8 @@ type TripDetails = {
 export function TripDetails ({ open, handleClose, openTripId}: TripDetails) {
     const queryClient = useQueryClient()
     const {data} = useQuery<AllTripsCardType[]>({ queryKey: ['getAllTrips'] }) 
+
+    const {showDialog, hideDialog, DialogPopup} = useDialog();
     
     //TODO use hooks!
     const mutation = useMutation({ 
@@ -57,16 +60,13 @@ export function TripDetails ({ open, handleClose, openTripId}: TripDetails) {
     }
     
     const { photo_url, title, description, itinerary } = trip;
-
+    
    return (
         <Modal
             open={open}
             onClose={() => {
                 // TODO consider something better than this hack, since really there is no update happens
-                queryClient.invalidateQueries({
-                    queryKey: ['getAllTrips'],
-                    type: 'all'
-                });
+                queryClient.invalidateQueries({queryKey: ['getAllTrips']});
                 handleClose()
             }}
             aria-labelledby="parent-modal-title"
@@ -102,14 +102,7 @@ export function TripDetails ({ open, handleClose, openTripId}: TripDetails) {
                         <Typography variant="h3">{title}</Typography>
                         <ButtonBase
                             sx={{ marginBottom: 4}}
-                            onClick={
-                            () => {
-                                    mutation.mutate({
-                                        id: trip.id,
-                                        status: trip.status === CardStatus.done ? CardStatus.todo : CardStatus.done,
-                                    })
-                                }
-                            }
+                            onClick={showDialog}
                         >
                         {trip.status === CardStatus.todo ? (
                             <Grid container item alignItems="flex-end" justifyContent="flex-start">
@@ -128,7 +121,31 @@ export function TripDetails ({ open, handleClose, openTripId}: TripDetails) {
                 <Grid container item pr={4} pl={4} pb={4}>
                     <TripTimeline itinerary={itinerary}/>
                 </Grid>
-            </Grid>
+                {/* Add hooks and abstractions need to move content creation of dialog in separete file */}
+                <DialogPopup
+                    children={<Typography variant="body2">{'Clicking proceed will change trip status'}</Typography>}
+                    title={'Are you sure?'}
+                    actions={
+                        [{
+                            text: 'Close',
+                            onClick: hideDialog,
+                            color: 'secondary',
+                            },
+                            {
+                                text: 'Proceed',
+                                onClick: async () =>  {
+                                    hideDialog()
+                                    mutation.mutate({
+                                        id: trip.id,
+                                        status: trip.status === CardStatus.done ? CardStatus.todo : CardStatus.done,
+                                    })
+                                },
+                                color: 'secondary',
+                            },
+                        ]
+                    }
+                />
+            </Grid>            
         </Modal>
     );
 }

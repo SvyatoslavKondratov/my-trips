@@ -1,3 +1,4 @@
+import { useDialog } from "@/app/hooks/useDialog";
 import { AllTripsCardType } from "@/app/types/card-types";
 import { Grid, Link, Typography } from "@mui/material";
 import Image from "next/image";
@@ -5,6 +6,7 @@ import Image from "next/image";
 export default function AllTripsCard(
     data: Pick<AllTripsCardType, "title" | "description" | "photo_url"> &  {openTripDetails: () => void, onDelete: () => void}) {
     const { title, description, photo_url, openTripDetails, onDelete } = data 
+    const {showDialog, hideDialog, DialogPopup} = useDialog();
     return(
         <Grid
             flexDirection="row"
@@ -58,7 +60,7 @@ export default function AllTripsCard(
                             <Link
                                 component="button"
                                 variant="subtitle2"
-                                onClick={() => onDelete()}
+                                onClick={showDialog}
                                 underline='always'
                                 >
                                 Delete
@@ -66,6 +68,27 @@ export default function AllTripsCard(
                         </Grid>                   
                 </Grid>
             </Grid>
+            {/* Add hooks and abstractions need to move content creation of dialog in separete file */}
+            <DialogPopup
+                    children={<Typography variant="body2">{'Clicking proceed will delete trip'}</Typography>}
+                    title={'Are you sure?'}
+                    actions={
+                        [{
+                            text: 'Close',
+                            onClick: hideDialog,
+                            color: 'secondary',
+                            },
+                            {
+                                text: 'Proceed',
+                                onClick: async () =>  {
+                                    hideDialog()
+                                    onDelete()
+                                },
+                                color: 'secondary',
+                            },
+                        ]
+                    }
+                />
         </Grid>
     )   
 }
