@@ -70,7 +70,6 @@ export default function AllTripsCard(
             </Grid>
             {/* Add hooks and abstractions need to move content creation of dialog in separete file */}
             <DialogPopup
-                    children={<Typography variant="body2">{'Clicking proceed will delete trip'}</Typography>}
                     title={'Are you sure?'}
                     actions={
                         [{
@@ -88,7 +87,9 @@ export default function AllTripsCard(
                             },
                         ]
                     }
-                />
+                >
+                    <Typography variant="body2">{'Clicking proceed will delete trip'}</Typography>
+                </DialogPopup>
         </Grid>
     )   
 }

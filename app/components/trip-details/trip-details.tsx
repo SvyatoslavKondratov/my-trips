@@ -92,7 +92,6 @@ export function TripDetails ({ open, handleClose, openTripId}: TripDetails) {
                 </Grid>
                 {/* Add hooks and abstractions need to move content creation of dialog in separete file */}
                 <DialogPopup
-                    children={<Typography variant="body2">{'Clicking proceed will change trip status'}</Typography>}
                     title={'Are you sure?'}
                     actions={
                         [{
@@ -113,7 +112,9 @@ export function TripDetails ({ open, handleClose, openTripId}: TripDetails) {
                             },
                         ]
                     }
-                />
+                >
+                    <Typography variant="body2">{'Clicking proceed will change trip status'}</Typography>
+                </DialogPopup>
             </Grid>            
         </Modal>
     );
