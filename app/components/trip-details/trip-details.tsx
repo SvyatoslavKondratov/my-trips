@@ -54,7 +54,8 @@ export function TripDetails ({ open, handleClose, openTripId}: TripDetails) {
                 sx={{ 
                     backgroundColor: 'white',
                     borderRadius: 2,
-                    height: '100%'
+                    height: '100%',
+                     overflow: 'scroll'
                 }}
                 justifyContent="center"
                 maxWidth={640}
