@@ -16,5 +16,6 @@ export type AllTripsCardType = {
     description: string;
     photo_url: string;
     status: CardStatus;
-    itinerary: Itinerary[]
+    itinerary: Itinerary[];
+    key: number;
 }

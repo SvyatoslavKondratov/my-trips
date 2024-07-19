@@ -1,4 +1,4 @@
-import { AllTripsCardType, CardStatus, Itinerary } from "@/app/types/card-types";
+import { AllTripsCardType, CardStatus } from "@/app/types/card-types";
 import { ButtonBase, Grid, Modal, Typography } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
@@ -6,6 +6,7 @@ import { TripTimeline } from "../triptimeline/trip-timeline";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useDialog } from "@/app/hooks/useDialog";
+import { useTripDetailsMutation } from "@/app/hooks/useTripDetailsMutation";
 
 
 type TripDetails = {
@@ -14,46 +15,18 @@ type TripDetails = {
     handleClose: () => void
 }
 
-export function TripDetails ({ open, handleClose, openTripId}: TripDetails) {
-    const queryClient = useQueryClient()
-    const {data} = useQuery<AllTripsCardType[]>({ queryKey: ['getAllTrips'] }) 
-
-    const {showDialog, hideDialog, DialogPopup} = useDialog();
-    
-    //TODO use hooks!
-    const mutation = useMutation({ 
-        mutationFn: async (data: {id: number, status: CardStatus}) => { 
-        const { id, status } = data
-        //TODO move to config
-        const response = await fetch(`https://my-json-server.typicode.com/mariosanz92/dream-travels-data/travels/${id}`, {
-            method: 'PATCH',
-            body: JSON.stringify({
-                status,
-            }),
-            headers: {
-              'Content-type': 'application/json; charset=UTF-8',
-            },
-          })
-        return response.json()
-        },
-        onSuccess: (response) => {
-            queryClient.setQueriesData(
-                {queryKey: ['getAllTrips']},
-                data?.map(({ id, ...rest }: AllTripsCardType) => id === response.id ? response : ({id, rest })),
-            )            
-        },
-        onError : (error) => {
-            // TODO log error
-            console.log('Error', error)
-        }}) 
+export function TripDetails ({ open, handleClose, openTripId}: TripDetails) { 
+    const {data} = useQuery<AllTripsCardType[]>({ queryKey: ['getAllTrips'] })
+    const {showDialog, hideDialog, DialogPopup} = useDialog();    
+    const mutation = useTripDetailsMutation();
 
     if (!data) {
-        //TODo add error handling
-        return;
+        //TODO add error handling
+        return (<Typography variant="subtitle1">No Data!</Typography>);        
     }
 
-    const trip = data.find(({ id, title }) => id + title === openTripId)
-
+    const trip = data.find(({ id, title }) => id + title === openTripId);
+    
     if(!trip) {
         //TODO handle this
         return;
@@ -64,11 +37,7 @@ export function TripDetails ({ open, handleClose, openTripId}: TripDetails) {
    return (
         <Modal
             open={open}
-            onClose={() => {
-                // TODO consider something better than this hack, since really there is no update happens
-                queryClient.invalidateQueries({queryKey: ['getAllTrips']});
-                handleClose()
-            }}
+            onClose={handleClose}
             aria-labelledby="parent-modal-title"
             aria-describedby="parent-modal-description"
             sx={{

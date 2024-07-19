@@ -1,60 +1,42 @@
 'use client';
 import * as React from 'react';
-import {Box, CircularProgress, Grid} from '@mui/material';
+import {Box, CircularProgress, Grid, Typography} from '@mui/material';
 import AllTripsCard from '../components/cards/all/all-trips-card';
-import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AllTripsCardType, CardStatus } from '../types/card-types';
 import { TripDetails } from '../components/trip-details/trip-details';
 import { useState, useEffect } from 'react';
 import NavigationButtons from '../components/buttons/navigation-buttons/navigation-buttons';
+import { useDeleteTripMutation } from '../hooks/useDeleteTripMutation';
+
 
 export default function Landing() {
-	const {data, error, isLoading} = useQuery<AllTripsCardType[]>({
-		queryKey: ['getAllTrips'],
-		queryFn: async () => (await fetch('https://my-json-server.typicode.com/mariosanz92/dream-travels-data/travels')).json(),
-	});
-
-	const queryClient = new QueryClient()
-    //TODO use hooks!
-    const mutation = useMutation({ 
-        mutationFn: async (data: {id: number }) => { 
-        const { id } = data
-        //TODO move to config
-        await fetch(`https://my-json-server.typicode.com/mariosanz92/dream-travels-data/travels/${id}`, {
-            method: 'DELETE',
-            body: JSON.stringify({
-                id,
-            }),
-            headers: {
-              'Content-type': 'application/json; charset=UTF-8',
-            },
-          })
-		  return id;
-        },
-        onSuccess: (responseId) => {
-            queryClient.setQueryData(
-                ['getAllTrips'],
-                data?.filter(({ id }) => id !== responseId),
-            )   
-			// TODO fix this ugly hack since no update need to fetch and cache trips for getAllTrips or create something else
-			setFilteredData(data?.filter(({ id }) => id !== responseId))      
-        },
-        onError : (error) => {
-            // TODO log error
-            console.log('Error', error)
-        }})
+	const {data = [], error, isLoading} = useQuery<AllTripsCardType[]>({queryKey: ['getAllTrips']});
 	
-	const [isTripDetailsOpened, setOpenTripDetails] = useState(false);
+	const queryClient = useQueryClient();
+
+    //TODO use hooks!
+    const mutation = useDeleteTripMutation();
+
 	const [openTripId, setOpenTripId] = useState<string|undefined>();
-	const [filteredData, setFilteredData] = useState<AllTripsCardType[]|undefined>(data) 
+	const [filteredData, setFilteredData] = useState<AllTripsCardType[]>(data);
 
 	useEffect(() => {
-		if(data) {
+		if(data.length === 0) {
+			queryClient.fetchQuery({queryKey: ['getAllTrips']})
+		}
+	}, [data.length])
+
+	useEffect(() => {
+		if(data.length) {
 			setFilteredData(data)
 		}
 	}, [data?.length])
 
-	//TODO handle error in providers
+	// TODO handle error in providers
+	if(error) {
+		return <Typography variant='subtitle1'>Error!</Typography>
+	}
 
 	//TODO reconsider this
 	if(isLoading) {
@@ -87,27 +69,20 @@ export default function Landing() {
 					alignItems: 'center',
 					mt: 2,
 				}}
-				>
-				{filteredData?.map(({id, title, description, photo_url}) => 
+				>				
+				{filteredData?.map(({id, title, description, photo_url, key}) => 				
 					<AllTripsCard
-						key={id + title}
+						key={key}
 						title={title}
 						description={description}
 						photo_url={photo_url}
-						openTripDetails={() => {
-							setOpenTripDetails(true)
-							setOpenTripId(id+title)
-						}}
+						openTripDetails={() => { setOpenTripId(id+title) }}
 						onDelete={() => mutation.mutate({id})}
 					/> )}
 			</Grid>
 			<TripDetails
-				open={isTripDetailsOpened}
-				handleClose={
-					() => {
-						setOpenTripDetails(false)
-						setOpenTripId(undefined)
-					}
+				open={Boolean(openTripId)}
+				handleClose={() => { setOpenTripId(undefined) }
 				}
 				openTripId={openTripId}
 			/>
