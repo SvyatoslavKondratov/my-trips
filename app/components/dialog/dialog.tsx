@@ -32,9 +32,7 @@ export default function DialogPopup({
 	return (
 		<Dialog open={isOpen} data-testid="dialog-popup" onClose={onClose}>
 			<DialogTitle>{title}</DialogTitle>
-			<DialogContent sx={{width: `450px`}}>
-				{children}
-			</DialogContent>
+			<DialogContent sx={{width: `450px`}}>{children}</DialogContent>
 			<DialogActions sx={{paddingInline: 2}}>
 				{actions.map((action) => (
 					<Button

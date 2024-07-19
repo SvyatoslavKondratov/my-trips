@@ -26,7 +26,7 @@ export const typographyStyles: TypographyOptions = {
 		fontWeight: 400,
 		lineHeight: '132%',
 		letterSpacing: '0.12px',
-	},	
+	},
 	subtitle1: {
 		fontSize: '16px',
 		fontStyle: 'normal',

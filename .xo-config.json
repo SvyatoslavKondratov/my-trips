@@ -1,0 +1,133 @@
+{
+  "parser": "@babel/eslint-parser",
+  "plugins": ["eslint-plugin-testing-library"],
+  "extends": ["xo-react"],
+  "rules": {
+    "unicorn/filename-case": "off",
+    "unicorn/prevent-abbreviations": "off",
+    "unicorn/prefer-top-level-await": "off",
+    "import/extensions": [
+      "error",
+      {
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "react/react-in-jsx-scope": "off",
+    "react/prefer-read-only-props": "off",
+    "@typescript-eslint/ban-types": "off"
+  },
+  "prettier": true,
+  "overrides": [
+    {
+      "files": ["next.config.js"],
+      "parserOptions": {
+        "requireConfigFile": false
+      },
+      "rules": {
+        "unicorn/prefer-module": "off",
+        "unicorn/no-use-module": "off",
+        "allowImportExportEverywhere": "off",
+        "import/no-unassigned-import": "off"
+      }
+    },
+    {
+      "files": ["**/*.ts", "**/*.tsx"],
+      "rules": {
+        "@typescript-eslint/naming-convention": [
+          "error",
+          {
+            "selector": "default",
+            "format": ["strictCamelCase", "StrictPascalCase"],
+            "leadingUnderscore": "allow",
+            "trailingUnderscore": "allow"
+          },
+          {
+            "selector": "variable",
+            "format": ["strictCamelCase", "StrictPascalCase"],
+            "leadingUnderscore": "allow",
+            "trailingUnderscore": "allow"
+          },
+          {
+            "selector": "objectLiteralProperty",
+            "format": null,
+            "filter": {
+              "regex": "^[a-z0-9]+(-[a-z0-9]+)*$|^&.*$|^__.*$",
+              "match": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "files": ["**/route.ts"],
+      "rules": {
+        "@typescript-eslint/naming-convention": [
+          "error",
+          {
+            "selector": "function",
+            "format": ["UPPER_CASE", "strictCamelCase", "StrictPascalCase"]
+          },
+          {
+            "selector": "default",
+            "format": ["UPPER_CASE", "strictCamelCase", "StrictPascalCase"],
+            "leadingUnderscore": "allow",
+            "trailingUnderscore": "allow"
+          },
+          {
+            "selector": "variable",
+            "format": ["UPPER_CASE", "strictCamelCase", "StrictPascalCase"],
+            "leadingUnderscore": "allow",
+            "trailingUnderscore": "allow"
+          }
+        ]
+      }
+    },
+    {
+      "files": ["cypress/**/*.ts"],
+      "rules": {
+        "@typescript-eslint/naming-convention": [
+          "error",
+          {
+            "selector": ["default"],
+            "format": ["strictCamelCase"],
+            "leadingUnderscore": "forbid",
+            "trailingUnderscore": "forbid"
+          },
+          {
+            "selector": ["variable"],
+            "modifiers": ["global"],
+            "format": ["UPPER_CASE"],
+            "types": ["boolean", "number", "string"]
+          },
+          {
+            "selector": ["classProperty"],
+            "modifiers": ["static"],
+            "format": ["UPPER_CASE"],
+            "types": ["boolean", "number", "string"]
+          },
+          {
+            "selector": ["enumMember"],
+            "format": ["UPPER_CASE"]
+          },
+          {
+            "selector": [
+              "class",
+              "interface",
+              "typeAlias",
+              "typeParameter",
+              "enum"
+            ],
+            "format": ["StrictPascalCase"]
+          },
+          {
+            "selector": ["parameter"],
+            "modifiers": ["unused"],
+            "format": ["strictCamelCase"],
+            "leadingUnderscore": "require"
+          }
+        ]
+      }
+    }
+  ]
+}

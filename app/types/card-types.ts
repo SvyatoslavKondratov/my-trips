@@ -1,21 +1,21 @@
-
 export enum CardStatus {
-    todo = 'todo',
-    done = 'done',
+	todo = 'todo',
+	done = 'done',
 }
 
 export type Itinerary = {
-    day: number;
-    location: string;
-    description: string;
-}
+	day: number;
+	location: string;
+	description: string;
+};
 
 export type AllTripsCardType = {
-    id: number,
-    title: string;
-    description: string;
-    photo_url: string;
-    status: CardStatus;
-    itinerary: Itinerary[];
-    key: number;
-}
+	id: number;
+	title: string;
+	description: string;
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	photo_url: string;
+	status: CardStatus;
+	itinerary: Itinerary[];
+	key: number;
+};
