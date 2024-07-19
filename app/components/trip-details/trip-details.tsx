@@ -44,14 +44,18 @@ export function TripDetails ({ open, handleClose, openTripId}: TripDetails) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                overflow: 'scroll',
+                overflow: 'scroll'
             }}
 
         >            
             <Grid 
                 container
                 item
-                sx={{ backgroundColor: 'white', borderRadius: 2 }}
+                sx={{ 
+                    backgroundColor: 'white',
+                    borderRadius: 2,
+                    height: '100%'
+                }}
                 justifyContent="center"
                 maxWidth={640}
             >

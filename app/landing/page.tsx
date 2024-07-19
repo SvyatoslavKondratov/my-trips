@@ -50,8 +50,7 @@ export default function Landing() {
 			justifyContent="center"
 			alignItems="center"
 			p={3}
-			sm={8}
-			md={12}
+			columns={12}
 		>      
 			<NavigationButtons
 				onClick={
@@ -67,7 +66,6 @@ export default function Landing() {
 					flexDirection: 'column',
 					overflow: 'hidden',
 					alignItems: 'center',
-					mt: 2,
 				}}
 				>				
 				{filteredData?.map(({id, title, description, photo_url, key}) => 				

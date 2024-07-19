@@ -25,7 +25,7 @@ export default function AllTripsCard(
                 item
                 md={3}
                 sm={3}
-                xs={3}
+                xs={4}
                 position="relative"
             >                
                 <Image
@@ -35,7 +35,7 @@ export default function AllTripsCard(
                     style={{ borderTopLeftRadius: 8, borderBottomLeftRadius: 8}}
                 />
             </Grid>   
-            <Grid alignItems="flex-start" flexDirection="column" container item md={8} ml={2} sm={8} xs={5} gap={2} m={2}>
+            <Grid alignItems="flex-start" flexDirection="column" container item md={8} ml={2} sm={8} xs={6} gap={2} m={2}>
                 <Typography variant="h5">{title}</Typography>
                 <Typography variant="subtitle2">{description}</Typography>
                 <Grid flexDirection="row" container justifyContent="space-between" alignItems="center" gap={1}>
