@@ -1,13 +1,13 @@
 import { AllTripsCardType, CardStatus } from "@/app/types/card-types";
 import { ButtonBase, Grid, Modal, Typography } from "@mui/material";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { TripTimeline } from "../triptimeline/trip-timeline";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useDialog } from "@/app/hooks/useDialog";
 import { useTripDetailsMutation } from "@/app/hooks/useTripDetailsMutation";
-
+import CancelIcon from '@mui/icons-material/Cancel';
 
 type TripDetails = {
     open: boolean,
@@ -44,21 +44,38 @@ export function TripDetails ({ open, handleClose, openTripId}: TripDetails) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}
-        >
-            <Grid container sx={{ backgroundColor: 'white', borderRadius: 2}} justifyContent="center" maxWidth={640}>
+                overflow: 'scroll',
+            }}
+
+        >            
+            <Grid 
+                container
+                item
+                sx={{ backgroundColor: 'white', borderRadius: 2 }}
+                justifyContent="center"
+                maxWidth={640}
+            >
                 <Grid
                     container
                     item
                     position="relative"
                     height={250}
+                    flexDirection='column'
                 >
-                    <Image
-                        fill
+                    <Grid container item justifyContent='flex-end' sx={{zIndex: 1000}} pr={2} pt={2}>                                             
+                        <ButtonBase
+                        
+                            onClick={handleClose}
+                            >
+                            <CancelIcon fontSize="small"/>
+                        </ButtonBase>  
+                    </Grid>
+                    <Image    
+                        fill    
                         src={photo_url}                  
                         alt={title}
                         style={{ borderTopLeftRadius: 8, borderTopRightRadius: 8}}
-                    />
+                    /> 
                 </Grid>  
                 <Grid container item  p={4}>
                     <Grid

@@ -1,8 +1,8 @@
 'use client';
 import * as React from 'react';
-import {Box, CircularProgress, Grid, Typography} from '@mui/material';
+import { CircularProgress, Grid, Typography} from '@mui/material';
 import AllTripsCard from '../components/cards/all/all-trips-card';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AllTripsCardType, CardStatus } from '../types/card-types';
 import { TripDetails } from '../components/trip-details/trip-details';
 import { useState, useEffect } from 'react';
@@ -44,13 +44,14 @@ export default function Landing() {
 	}
 
 	return data && (
-		<Box
-			height="100%"
-			width="100%"
+		<Grid
+			container
 			flexDirection="column"
 			justifyContent="center"
 			alignItems="center"
 			p={3}
+			sm={8}
+			md={12}
 		>      
 			<NavigationButtons
 				onClick={
@@ -58,14 +59,13 @@ export default function Landing() {
 				}/> 
 			<Grid
 				container
+				item
 				component="main"
 				gap="24px"
-				columns={12}
 				sx={{
 					display: 'flex',
 					flexDirection: 'column',
 					overflow: 'hidden',
-					maxWidth: '100%',
 					alignItems: 'center',
 					mt: 2,
 				}}
@@ -86,6 +86,6 @@ export default function Landing() {
 				}
 				openTripId={openTripId}
 			/>
-		</Box>
+		</Grid>
 	);
 }

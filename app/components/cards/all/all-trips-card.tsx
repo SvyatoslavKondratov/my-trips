@@ -16,8 +16,8 @@ export default function AllTripsCard(
                 borderWidth: 1,
                 borderStyle: 'solid', 
                 borderRadius: 2,
-                borderColor: 'lightGray', 
-                maxWidth: 928,        
+                borderColor: 'lightGray',
+                maxWidth: 928,  
             }}
         >
             <Grid
@@ -25,16 +25,16 @@ export default function AllTripsCard(
                 item
                 md={3}
                 sm={3}
-                xs={4}
+                xs={3}
                 position="relative"
-            >
+            >                
                 <Image
                     fill
                     src={photo_url}                  
                     alt="Portugal"
                     style={{ borderTopLeftRadius: 8, borderBottomLeftRadius: 8}}
                 />
-            </Grid>     
+            </Grid>   
             <Grid alignItems="flex-start" flexDirection="column" container item md={8} ml={2} sm={8} xs={5} gap={2} m={2}>
                 <Typography variant="h5">{title}</Typography>
                 <Typography variant="subtitle2">{description}</Typography>
