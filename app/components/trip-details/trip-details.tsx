@@ -34,6 +34,7 @@ export function TripDetails({open, handleClose, openTripId}: TripDetailsType) {
 		return;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	const {photo_url, title, description, itinerary} = trip;
 
 	return (
@@ -82,9 +83,14 @@ export function TripDetails({open, handleClose, openTripId}: TripDetailsType) {
 					</Grid>
 					<Image
 						fill
+						sizes="100vw"
 						src={photo_url}
 						alt={title}
-						style={{borderTopLeftRadius: 8, borderTopRightRadius: 8}}
+						style={{
+							borderTopLeftRadius: 8,
+							borderTopRightRadius: 8,
+							objectFit: 'cover',
+						}}
 					/>
 				</Grid>
 				<Grid container item p={4}>

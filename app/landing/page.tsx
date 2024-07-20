@@ -28,7 +28,7 @@ export default function Landing() {
 
 	useEffect(() => {
 		if (data.length === 0) {
-			queryClient.fetchQuery({queryKey: ['getAllTrips']});
+			void queryClient.fetchQuery({queryKey: ['getAllTrips']});
 		}
 	}, [data.length]);
 

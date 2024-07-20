@@ -23,27 +23,31 @@ export default function AllTripsCard(
 				borderRadius: 2,
 				borderColor: 'lightGray',
 				maxWidth: 928,
+				justifyContent: 'space-between',
 			}}
 		>
-			<Grid container item md={3} sm={3} xs={4} position="relative">
+			<Grid container item position="relative" md={3.55} sm={3.55} xs={4.9}>
 				<Image
 					fill
+					sizes="100vw"
 					src={photo_url}
-					alt="Portugal"
-					style={{borderTopLeftRadius: 8, borderBottomLeftRadius: 8}}
+					alt={title}
+					style={{
+						borderTopLeftRadius: 8,
+						borderBottomLeftRadius: 8,
+						objectFit: 'cover',
+					}}
 				/>
 			</Grid>
 			<Grid
 				container
 				item
-				alignItems="flex-start"
 				flexDirection="column"
+				m={2}
+				gap={2}
 				md={8}
-				ml={2}
 				sm={8}
 				xs={6}
-				gap={2}
-				m={2}
 			>
 				<Typography variant="h5">{title}</Typography>
 				<Typography variant="subtitle2">{description}</Typography>
