@@ -43,7 +43,9 @@ export default function AllTripsCard(
 				container
 				item
 				flexDirection="column"
-				m={2}
+				mr={2}
+				mt={2}
+				mb={2}
 				gap={2}
 				md={8}
 				sm={8}
@@ -53,6 +55,7 @@ export default function AllTripsCard(
 				<Typography variant="subtitle2">{description}</Typography>
 				<Grid
 					container
+					item
 					flexDirection="row"
 					justifyContent="space-between"
 					alignItems="center"
