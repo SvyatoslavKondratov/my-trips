@@ -7,8 +7,12 @@ import {
 	Typography,
 } from '@mui/material';
 import * as React from 'react';
+import {useState} from 'react';
+import {useSearch} from '@/app/hooks/useSearch';
 
 export function Search() {
+	const {search} = useSearch();
+	const [searchQuery, setSearchQuery] = useState<string>('');
 	return (
 		<Grid container flexDirection="column" alignItems="center" mb={4}>
 			<Typography variant="h3">The places you dream of</Typography>
@@ -25,11 +29,20 @@ export function Search() {
 								borderRadius: 10,
 								textTransform: 'none',
 							}}
+							onClick={() => {
+								if (searchQuery.length > 2) {
+									search(searchQuery);
+								}
+							}}
 						>
 							Search
 						</Button>
 					</InputAdornment>
 				}
+				value={searchQuery}
+				onChange={(event) => {
+					setSearchQuery(event.target.value);
+				}}
 			/>
 		</Grid>
 	);
