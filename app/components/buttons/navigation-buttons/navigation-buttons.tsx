@@ -9,8 +9,13 @@ type NavigationButtonsType = {
 export default function NavigationButtons({onClick}: NavigationButtonsType) {
 	return (
 		<Grid container flexDirection="row" justifyContent="center">
-			<ButtonGroup variant="outlined" aria-label="Basic button group">
+			<ButtonGroup variant="outlined" color="secondary">
 				<Button
+					sx={{
+						borderTopLeftRadius: 20,
+						borderBottomLeftRadius: 20,
+						color: 'black',
+					}}
 					onClick={() => {
 						onClick();
 					}}
@@ -18,6 +23,7 @@ export default function NavigationButtons({onClick}: NavigationButtonsType) {
 					All
 				</Button>
 				<Button
+					sx={{color: 'black'}}
 					onClick={() => {
 						onClick(CardStatus.todo);
 					}}
@@ -25,6 +31,11 @@ export default function NavigationButtons({onClick}: NavigationButtonsType) {
 					Upcoming
 				</Button>
 				<Button
+					sx={{
+						borderTopRightRadius: 20,
+						borderBottomRightRadius: 20,
+						color: 'black',
+					}}
 					onClick={() => {
 						onClick(CardStatus.done);
 					}}

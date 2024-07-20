@@ -40,8 +40,6 @@ export function TripDetails({open, handleClose, openTripId}: TripDetailsType) {
 	return (
 		<Modal
 			open={open}
-			aria-labelledby="parent-modal-title"
-			aria-describedby="parent-modal-description"
 			sx={{
 				display: 'flex',
 				alignItems: 'center',
@@ -56,7 +54,7 @@ export function TripDetails({open, handleClose, openTripId}: TripDetailsType) {
 				sx={{
 					backgroundColor: 'white',
 					borderRadius: 2,
-					height: '100%',
+					maxHeight: '100%',
 					overflow: 'scroll',
 				}}
 				justifyContent="center"
@@ -83,7 +81,7 @@ export function TripDetails({open, handleClose, openTripId}: TripDetailsType) {
 					</Grid>
 					<Image
 						fill
-						sizes="100vw"
+						sizes="100vmin"
 						src={photo_url}
 						alt={title}
 						style={{

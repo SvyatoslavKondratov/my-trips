@@ -1,22 +1,52 @@
-import {AppBar, Grid, Toolbar, Typography} from '@mui/material';
+import {
+	AppBar,
+	Box,
+	Button,
+	Grid,
+	IconButton,
+	Toolbar,
+	Typography,
+} from '@mui/material';
+import ExoticcaLogo from '@/app/svgs/Vector';
 
 export default function Header() {
 	return (
-		<AppBar
-			component="nav"
-			sx={{
-				alignItems: 'center',
-				position: 'sticky',
-				backgroundColor: '#FFF',
-			}}
-		>
-			<Toolbar>
-				<Grid container justifyContent="center" m={1}>
-					<Typography variant="h5" mb={2} color="black">
-						The places you dream of
-					</Typography>
-				</Grid>
-			</Toolbar>
-		</AppBar>
+		<Grid container justifyContent="center" mt={2} mb={2}>
+			<AppBar
+				position="static"
+				sx={{
+					backgroundColor: 'black',
+					width: '90%',
+					borderRadius: 3,
+					paddingTop: 1,
+					paddingBottom: 1,
+				}}
+			>
+				<Toolbar>
+					<IconButton
+						sx={{
+							ml: 0,
+							backgroundColor: 'white',
+							padding: '12px 9.5px',
+						}}
+					>
+						<ExoticcaLogo />
+					</IconButton>
+					<Button
+						variant="outlined"
+						sx={{
+							backgroundColor: 'white',
+							color: 'black',
+							borderRadius: 5,
+							position: 'absolute',
+							right: 16,
+							textTransform: 'none',
+						}}
+					>
+						Create new trip
+					</Button>
+				</Toolbar>
+			</AppBar>
+		</Grid>
 	);
 }

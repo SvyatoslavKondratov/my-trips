@@ -22,11 +22,11 @@ export default function AllTripsCard(
 				borderStyle: 'solid',
 				borderRadius: 2,
 				borderColor: 'lightGray',
-				maxWidth: 928,
 				justifyContent: 'space-between',
+				marginBottom: 2,
 			}}
 		>
-			<Grid container item position="relative" md={3.55} sm={3.55} xs={4.9}>
+			<Grid container item position="relative" md={5.5} sm={5.5} xs={4.9}>
 				<Image
 					fill
 					sizes="100vw"
@@ -47,8 +47,8 @@ export default function AllTripsCard(
 				mt={2}
 				mb={2}
 				gap={2}
-				md={8}
-				sm={8}
+				md={6}
+				sm={6}
 				xs={6}
 			>
 				<Typography variant="h5">{title}</Typography>
