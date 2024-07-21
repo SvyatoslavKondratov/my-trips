@@ -12,11 +12,6 @@ import {useDeleteTripMutation} from '../../hooks/useDeleteTripMutation';
 import {useGetTrips} from '@/app/hooks/useGetTrips';
 
 export default function CardList({status}: {status: CardStatus}) {
-	// Const {isStale, isFetched} = useQuery<AllTripsCardType[]>({
-	// 	queryKey: ['getAllTrips'],
-	// });
-	// console.log('isStale', isStale, 'isFetched', isFetched);
-
 	const queries = [{}, {status: CardStatus.done}, {status: CardStatus.todo}];
 
 	const combinedQueries = useQueries({
@@ -25,7 +20,7 @@ export default function CardList({status}: {status: CardStatus}) {
 		})),
 		combine(results) {
 			return {
-				data: results.map((result) => result.data),
+				data: results.map((result) => result.data) as AllTripsCardType[][],
 				isLoading: false,
 				error: results.some((result) => result.error),
 			};
@@ -35,12 +30,11 @@ export default function CardList({status}: {status: CardStatus}) {
 	const {data = [], error, isLoading} = combinedQueries;
 	// Const data = dataObject[status];
 
-	// TODO fix this
 	const tripData = data.find((trips) =>
 		status === CardStatus.all && trips
 			? trips[0]
 			: trips?.every((trip) => trip.status === status),
-	) as AllTripsCardType[];
+	)!;
 
 	const {fetchTrips} = useGetTrips();
 
