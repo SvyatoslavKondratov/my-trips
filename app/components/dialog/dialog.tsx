@@ -37,10 +37,8 @@ export default function DialogPopup({
 				{actions.map((action) => (
 					<Button
 						key={action.text}
-						variant={action.variant ?? 'text'}
-						color={action.color}
-						data-testid={action['data-testid']}
-						disabled={action.disabled}
+						variant="outlined"
+						color="secondary"
 						onClick={action.onClick}
 					>
 						{action.text}

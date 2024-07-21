@@ -7,17 +7,17 @@ import CardList from '../components/card-list/card-list';
 import {Search} from '../components/search/search';
 import NavigationButtons from '../components/buttons/navigation-buttons/navigation-buttons';
 import {useGetTrips} from '../hooks/useGetTrips';
-import {CardStatus} from '../types/card-types';
+import {TripStatus} from '../types/card-types';
 
 export default function Landing() {
 	const {fetchTrips} = useGetTrips();
-	const [status, setStatus] = useState<CardStatus>(CardStatus.all);
+	const [status, setStatus] = useState<TripStatus>(TripStatus.all);
 	return (
 		<Grid>
 			<Search />
 			<Grid container item mb={2}>
 				<NavigationButtons
-					onClick={async (status: CardStatus) => {
+					onClick={async (status: TripStatus) => {
 						await fetchTrips(status);
 						setStatus(status);
 					}}

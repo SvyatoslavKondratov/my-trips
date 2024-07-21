@@ -1,9 +1,9 @@
 'use client';
 import {Button, ButtonGroup, Grid} from '@mui/material';
-import {CardStatus} from '@/app/types/card-types';
+import {TripStatus} from '@/app/types/card-types';
 
 type NavigationButtonsType = {
-	onClick: (status: CardStatus) => void;
+	onClick: (status: TripStatus) => void;
 };
 
 export default function NavigationButtons({onClick}: NavigationButtonsType) {
@@ -14,18 +14,30 @@ export default function NavigationButtons({onClick}: NavigationButtonsType) {
 					sx={{
 						borderTopLeftRadius: 20,
 						borderBottomLeftRadius: 20,
-						color: 'black',
+						'&:focus': {
+							backgroundColor: '#F3F3F3',
+						},
+						'&:hover': {
+							backgroundColor: '#F3F3F3',
+						},
 					}}
 					onClick={() => {
-						onClick(CardStatus.all);
+						onClick(TripStatus.all);
 					}}
 				>
 					All
 				</Button>
 				<Button
-					sx={{color: 'black'}}
+					sx={{
+						'&:focus': {
+							backgroundColor: '#F3F3F3',
+						},
+						'&:hover': {
+							backgroundColor: '#F3F3F3',
+						},
+					}}
 					onClick={() => {
-						onClick(CardStatus.todo);
+						onClick(TripStatus.todo);
 					}}
 				>
 					Upcoming
@@ -34,10 +46,15 @@ export default function NavigationButtons({onClick}: NavigationButtonsType) {
 					sx={{
 						borderTopRightRadius: 20,
 						borderBottomRightRadius: 20,
-						color: 'black',
+						'&:focus': {
+							backgroundColor: '#F3F3F3',
+						},
+						'&:hover': {
+							backgroundColor: '#F3F3F3',
+						},
 					}}
 					onClick={() => {
-						onClick(CardStatus.done);
+						onClick(TripStatus.done);
 					}}
 				>
 					Completed

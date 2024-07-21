@@ -8,35 +8,19 @@ import {useQuery} from '@tanstack/react-query';
 import {TripTimeline} from '../triptimeline/trip-timeline';
 import {useDialog} from '@/app/hooks/useDialog';
 import {useTripDetailsMutation} from '@/app/hooks/useTripDetailsMutation';
-import {type AllTripsCardType, CardStatus} from '@/app/types/card-types';
+import {type TripType, TripStatus} from '@/app/types/card-types';
 
 type TripDetailsType = {
 	// eslint-disable-next-line react/boolean-prop-naming
 	open: boolean;
-	openTripId?: string;
+	trip: TripType;
 	handleClose: () => void;
 };
 
-export function TripDetails({open, handleClose, openTripId}: TripDetailsType) {
-	const {data} = useQuery<AllTripsCardType[]>({queryKey: ['getAllTrips']});
+export function TripDetails({open, handleClose, trip}: TripDetailsType) {
+	// Const {data} = useQuery<TripType[]>({queryKey: ['getAllTrips']});
 	const {showDialog, hideDialog, DialogPopup} = useDialog();
 	const mutation = useTripDetailsMutation();
-	// TODO refactor!
-	if (!open) {
-		return;
-	}
-
-	if (!data) {
-		// TODO add error handling
-		return <Typography variant="subtitle1">No Data!</Typography>;
-	}
-
-	const trip = data.find(({id, title}) => id + title === openTripId);
-
-	if (!trip) {
-		// TODO handle this
-		return;
-	}
 
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	const {photo_url, title, description, itinerary} = trip;
@@ -109,7 +93,7 @@ export function TripDetails({open, handleClose, openTripId}: TripDetailsType) {
 					>
 						<Typography variant="h3">{title}</Typography>
 						<ButtonBase sx={{marginBottom: 4}} onClick={showDialog}>
-							{trip.status === CardStatus.todo ? (
+							{trip.status === TripStatus.todo ? (
 								<Grid
 									container
 									item
@@ -165,9 +149,9 @@ export function TripDetails({open, handleClose, openTripId}: TripDetailsType) {
 								mutation.mutate({
 									id: trip.id,
 									status:
-										trip.status === CardStatus.done
-											? CardStatus.todo
-											: CardStatus.done,
+										trip.status === TripStatus.done
+											? TripStatus.todo
+											: TripStatus.done,
 								});
 							},
 							color: 'secondary',

@@ -11,9 +11,10 @@ const primary = {
 
 const secondary = {
 	light: '#ff7961',
-	main: '#D8D8D8',
+	main: '#000',
 	dark: '#ba000d',
 	contrastText: '#000',
+	success: '#F3F3F3',
 };
 
 export const lightTheme = createTheme({

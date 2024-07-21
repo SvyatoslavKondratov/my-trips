@@ -1,6 +1,6 @@
 /* eslint-disable n/file-extension-in-import */
 import {useMutation, useQueryClient} from '@tanstack/react-query';
-import {type AllTripsCardType} from '../types/card-types';
+import {type TripType} from '../types/card-types';
 import {BASE_URL} from '../constants/urls';
 
 export const useDeleteTripMutation = () => {
@@ -20,9 +20,7 @@ export const useDeleteTripMutation = () => {
 			return id;
 		},
 		async onSuccess(responseId) {
-			const data = queryClient.getQueryData<AllTripsCardType[]>([
-				'getAllTrips',
-			]);
+			const data = queryClient.getQueryData<TripType[]>(['getAllTrips']);
 			const value = data?.filter(({id}) => id !== responseId);
 			queryClient.setQueryData(['getAllTrips'], value);
 		},

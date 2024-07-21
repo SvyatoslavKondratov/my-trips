@@ -3,16 +3,20 @@
 'use client';
 import * as React from 'react';
 import {CircularProgress, Grid, Typography} from '@mui/material';
-import {useMutationState, useQueries} from '@tanstack/react-query';
+import {
+	useIsFetching,
+	useMutationState,
+	useQueries,
+} from '@tanstack/react-query';
 import {useState, useEffect} from 'react';
 import AllTripsCard from '../cards/all/all-trips-card';
-import {CardStatus, type AllTripsCardType} from '../../types/card-types';
+import {TripStatus, type TripType} from '../../types/card-types';
 import {TripDetails} from '../trip-details/trip-details';
 import {useDeleteTripMutation} from '../../hooks/useDeleteTripMutation';
 import {useGetTrips} from '@/app/hooks/useGetTrips';
 
-export default function CardList({status}: {status: CardStatus}) {
-	const queries = [CardStatus.all, CardStatus.done, CardStatus.todo];
+export default function CardList({status}: {status: TripStatus}) {
+	const queries = [TripStatus.all, TripStatus.done, TripStatus.todo];
 
 	const combinedQueries = useQueries({
 		queries: queries.map((query) => ({
@@ -20,28 +24,28 @@ export default function CardList({status}: {status: CardStatus}) {
 		})),
 		combine(results) {
 			return {
-				data: results.map((result) => result.data) as AllTripsCardType[][],
-				isLoading: false,
+				data: results.map((result) => result.data) as TripType[][],
+				isLoading: results.every((result) => !result.isFetched),
 				error: results.some((result) => result.error),
 			};
 		},
 	});
 
-	const {data = [], error, isLoading} = combinedQueries;
-	console.log('combinedQueries', combinedQueries);
+	const {data = [], isLoading, error} = combinedQueries;
+	console.log('combinedQueries', combinedQueries, 'isLoading', isLoading);
 
 	const tripObject = {
-		[CardStatus.all]: (statusArray: CardStatus[]) =>
+		[TripStatus.all]: (statusArray: TripStatus[]) =>
 			statusArray?.every((item) =>
-				[CardStatus.done, CardStatus.todo].includes(item),
+				[TripStatus.done, TripStatus.todo].includes(item),
 			),
-		[CardStatus.done]: (statusArray: CardStatus[]) =>
+		[TripStatus.done]: (statusArray: TripStatus[]) =>
 			statusArray?.every((item) => item === status),
-		[CardStatus.todo]: (statusArray: CardStatus[]) =>
+		[TripStatus.todo]: (statusArray: TripStatus[]) =>
 			statusArray?.every((item) => item === status),
 	};
 
-	let tripData = [] as AllTripsCardType[];
+	let tripData = [] as TripType[];
 	for (const trips of data) {
 		const statusArray = trips?.map(({status}) => status);
 		if (statusArray?.length > 0 && tripObject[status](statusArray)) {
@@ -60,7 +64,7 @@ export default function CardList({status}: {status: CardStatus}) {
 
 	useEffect(() => {
 		const getTrips = async () => {
-			await fetchTrips(CardStatus.all);
+			await fetchTrips(TripStatus.all);
 		};
 
 		void getTrips();
@@ -125,13 +129,15 @@ export default function CardList({status}: {status: CardStatus}) {
 							/>
 						))}
 					</Grid>
-					<TripDetails
-						open={Boolean(openTripId)}
-						handleClose={() => {
-							setOpenTripId(undefined);
-						}}
-						openTripId={openTripId}
-					/>
+					{openTripId && (
+						<TripDetails
+							open={Boolean(openTripId)}
+							handleClose={() => {
+								setOpenTripId(undefined);
+							}}
+							trip={tripData.find(({id, title}) => openTripId === id + title)!}
+						/>
+					)}
 				</Grid>
 			</Grid>
 		)

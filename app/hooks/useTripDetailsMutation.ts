@@ -1,6 +1,6 @@
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 // eslint-disable-next-line n/file-extension-in-import
-import {type AllTripsCardType, type CardStatus} from '../types/card-types';
+import {type TripType, type TripStatus} from '../types/card-types';
 // eslint-disable-next-line n/file-extension-in-import
 import {BASE_URL} from '../constants/urls';
 
@@ -8,7 +8,7 @@ export const useTripDetailsMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationKey: ['patch'],
-		async mutationFn(data: {id: number; status: CardStatus}) {
+		async mutationFn(data: {id: number; status: TripStatus}) {
 			const {id, status} = data;
 			const response = await fetch(`${BASE_URL}/travels/${id}`, {
 				method: 'PATCH',
@@ -20,13 +20,11 @@ export const useTripDetailsMutation = () => {
 			});
 			return response.json();
 		},
-		onSuccess(response: AllTripsCardType) {
-			const data = queryClient.getQueryData<AllTripsCardType[]>([
-				'getAllTrips',
-			]);
+		onSuccess(response: TripType) {
+			const data = queryClient.getQueryData<TripType[]>(['getAllTrips']);
 			queryClient.setQueriesData(
 				{queryKey: ['getAllTrips']},
-				data?.map(({id, ...rest}: AllTripsCardType) =>
+				data?.map(({id, ...rest}: TripType) =>
 					id === response.id ? response : {id, ...rest},
 				),
 			);

@@ -1,4 +1,4 @@
-export enum CardStatus {
+export enum TripStatus {
 	todo = 'todo',
 	done = 'done',
 	all = 'all',
@@ -10,13 +10,13 @@ export type Itinerary = {
 	description: string;
 };
 
-export type AllTripsCardType = {
+export type TripType = {
 	id: number;
 	title: string;
 	description: string;
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	photo_url: string;
-	status: CardStatus;
+	status: TripStatus;
 	itinerary: Itinerary[];
 	key: number;
 };

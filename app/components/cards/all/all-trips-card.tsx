@@ -1,10 +1,10 @@
 import {Grid, Link, Typography} from '@mui/material';
 import Image from 'next/image';
 import {useDialog} from '@/app/hooks/useDialog';
-import {type AllTripsCardType} from '@/app/types/card-types';
+import {type TripType} from '@/app/types/card-types';
 
 export default function AllTripsCard(
-	data: Pick<AllTripsCardType, 'title' | 'description' | 'photo_url'> & {
+	data: Pick<TripType, 'title' | 'description' | 'photo_url'> & {
 		openTripDetails: () => void;
 		onDelete: () => void;
 	},
