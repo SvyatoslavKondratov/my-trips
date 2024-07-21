@@ -21,6 +21,10 @@ export function TripDetails({open, handleClose, openTripId}: TripDetailsType) {
 	const {data} = useQuery<AllTripsCardType[]>({queryKey: ['getAllTrips']});
 	const {showDialog, hideDialog, DialogPopup} = useDialog();
 	const mutation = useTripDetailsMutation();
+	// TODO refactor!
+	if (!open) {
+		return;
+	}
 
 	if (!data) {
 		// TODO add error handling

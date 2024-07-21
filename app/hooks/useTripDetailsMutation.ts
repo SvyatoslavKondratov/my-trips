@@ -7,6 +7,7 @@ import {BASE_URL} from '../constants/urls';
 export const useTripDetailsMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
+		mutationKey: ['patch'],
 		async mutationFn(data: {id: number; status: CardStatus}) {
 			const {id, status} = data;
 			const response = await fetch(`${BASE_URL}/travels/${id}`, {

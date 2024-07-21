@@ -29,9 +29,9 @@ export function Search() {
 								borderRadius: 10,
 								textTransform: 'none',
 							}}
-							onClick={() => {
-								if (searchQuery.length > 2) {
-									search(searchQuery);
+							onClick={async () => {
+								if (searchQuery.length > 2 || searchQuery === '') {
+									await search(searchQuery);
 								}
 							}}
 						>

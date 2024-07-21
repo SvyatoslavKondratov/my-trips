@@ -3,7 +3,7 @@ import {Button, ButtonGroup, Grid} from '@mui/material';
 import {CardStatus} from '@/app/types/card-types';
 
 type NavigationButtonsType = {
-	onClick: (status?: CardStatus) => void;
+	onClick: (status: CardStatus) => void;
 };
 
 export default function NavigationButtons({onClick}: NavigationButtonsType) {
@@ -17,7 +17,7 @@ export default function NavigationButtons({onClick}: NavigationButtonsType) {
 						color: 'black',
 					}}
 					onClick={() => {
-						onClick();
+						onClick(CardStatus.all);
 					}}
 				>
 					All

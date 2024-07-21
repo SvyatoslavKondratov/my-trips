@@ -6,6 +6,7 @@ import {BASE_URL} from '../constants/urls';
 export const useDeleteTripMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
+		mutationKey: ['delete'],
 		async mutationFn(data: {id: number}) {
 			const {id} = data;
 			await fetch(`${BASE_URL}/travels/${id}`, {
@@ -18,14 +19,12 @@ export const useDeleteTripMutation = () => {
 			});
 			return id;
 		},
-		onSuccess(responseId) {
+		async onSuccess(responseId) {
 			const data = queryClient.getQueryData<AllTripsCardType[]>([
 				'getAllTrips',
 			]);
-			queryClient.setQueryData(
-				['getAllTrips'],
-				data?.filter(({id}) => id !== responseId),
-			);
+			const value = data?.filter(({id}) => id !== responseId);
+			queryClient.setQueryData(['getAllTrips'], value);
 		},
 		onError(error) {
 			// TODO log error

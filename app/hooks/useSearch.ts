@@ -4,23 +4,22 @@ import {type AllTripsCardType} from '../types/card-types';
 
 export function useSearch() {
 	const queryClient = useQueryClient();
-	const search = (searchQuery: string) => {
+	const search = async (searchQuery: string) => {
+		let data: AllTripsCardType[] | undefined;
 		const queryKey = ['getAllTrips'];
-		const data = queryClient.getQueryData<AllTripsCardType[]>(queryKey);
+		data = queryClient.getQueryData<AllTripsCardType[]>(queryKey);
 
-		if (!data) {
-			void queryClient.fetchQuery({queryKey});
-			return;
+		// TODO this hack is to use search to refect not only to reload page
+		if (!data || searchQuery === '') {
+			data = await queryClient.fetchQuery({queryKey});
 		}
 
-		queryClient.setQueryData(
-			queryKey,
-			data.filter(
-				(item: AllTripsCardType) =>
-					item.title.includes(searchQuery) ||
-					item.description.includes(searchQuery),
-			),
+		const value = data?.filter(
+			(item: AllTripsCardType) =>
+				item.title.includes(searchQuery) ||
+				item.description.includes(searchQuery),
 		);
+		queryClient.setQueriesData({queryKey, type: 'inactive'}, value);
 	};
 
 	return {search};

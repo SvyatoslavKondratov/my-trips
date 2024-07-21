@@ -3,40 +3,71 @@
 'use client';
 import * as React from 'react';
 import {CircularProgress, Grid, Typography} from '@mui/material';
-import {useQuery, useQueryClient} from '@tanstack/react-query';
+import {useMutationState, useQueries} from '@tanstack/react-query';
 import {useState, useEffect} from 'react';
 import AllTripsCard from '../cards/all/all-trips-card';
-import {type AllTripsCardType, type CardStatus} from '../../types/card-types';
+import {CardStatus, type AllTripsCardType} from '../../types/card-types';
 import {TripDetails} from '../trip-details/trip-details';
-import NavigationButtons from '../buttons/navigation-buttons/navigation-buttons';
 import {useDeleteTripMutation} from '../../hooks/useDeleteTripMutation';
+import {useGetTrips} from '@/app/hooks/useGetTrips';
 
-export default function CardList() {
-	const {
-		data = [],
-		error,
-		isLoading,
-	} = useQuery<AllTripsCardType[]>({queryKey: ['getAllTrips']});
+export default function CardList({status}: {status: CardStatus}) {
+	// Const {isStale, isFetched} = useQuery<AllTripsCardType[]>({
+	// 	queryKey: ['getAllTrips'],
+	// });
+	// console.log('isStale', isStale, 'isFetched', isFetched);
 
-	const queryClient = useQueryClient();
+	const queries = [{}, {status: CardStatus.done}, {status: CardStatus.todo}];
 
-	// TODO use hooks!
+	const combinedQueries = useQueries({
+		queries: queries.map((query) => ({
+			queryKey: ['getAllTrips', query],
+		})),
+		combine(results) {
+			return {
+				data: results.map((result) => result.data),
+				isLoading: false,
+				error: results.some((result) => result.error),
+			};
+		},
+	});
+
+	const {data = [], error, isLoading} = combinedQueries;
+	// Const data = dataObject[status];
+
+	// TODO fix this
+	const tripData = data.find((trips) =>
+		status === CardStatus.all && trips
+			? trips[0]
+			: trips?.every((trip) => trip.status === status),
+	) as AllTripsCardType[];
+
+	const {fetchTrips} = useGetTrips();
+
 	const mutation = useDeleteTripMutation();
-
+	const successMutation = useMutationState({
+		filters: {status: 'success'},
+	});
 	const [openTripId, setOpenTripId] = useState<string | undefined>();
-	const [filteredData, setFilteredData] = useState<AllTripsCardType[]>(data);
+	console.log('successMutation', successMutation);
 
 	useEffect(() => {
-		if (data.length === 0) {
-			void queryClient.fetchQuery({queryKey: ['getAllTrips']});
-		}
-	}, [data.length]);
+		const getTrips = async () => {
+			await fetchTrips(CardStatus.all);
+		};
+
+		void getTrips();
+	}, []);
 
 	useEffect(() => {
-		if (data.length > 0) {
-			setFilteredData(data);
+		if (successMutation.length > 0) {
+			const getTrips = async () => {
+				await fetchTrips(status);
+			};
+
+			void getTrips();
 		}
-	}, [data?.length]);
+	}, [successMutation.length]);
 
 	// TODO handle error in providers
 	if (error) {
@@ -49,7 +80,7 @@ export default function CardList() {
 	}
 
 	return (
-		data && (
+		tripData && (
 			<Grid container justifyContent="center">
 				<Grid
 					container
@@ -60,15 +91,6 @@ export default function CardList() {
 					columns={12}
 					width="90%"
 				>
-					<Grid container item mb={2}>
-						<NavigationButtons
-							onClick={(status?: CardStatus) => {
-								setFilteredData(
-									status ? data.filter((trip) => trip.status === status) : data,
-								);
-							}}
-						/>
-					</Grid>
 					<Grid
 						container
 						item
@@ -81,7 +103,7 @@ export default function CardList() {
 							alignItems: 'center',
 						}}
 					>
-						{filteredData?.map(({id, title, description, photo_url, key}) => (
+						{tripData?.map(({id, title, description, photo_url, key}) => (
 							<AllTripsCard
 								key={key}
 								title={title}

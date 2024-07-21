@@ -1,6 +1,7 @@
 export enum CardStatus {
 	todo = 'todo',
 	done = 'done',
+	all = 'all',
 }
 
 export type Itinerary = {
