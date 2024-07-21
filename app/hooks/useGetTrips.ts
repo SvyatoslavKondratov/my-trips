@@ -14,13 +14,22 @@ export function useGetTrips() {
 		const data =
 			cachedData ??
 			(await queryClient.fetchQuery<AllTripsCardType[]>({queryKey}));
+		const searchedTrips = queryClient.getQueryData<AllTripsCardType[]>([
+			'searchedTrips',
+		]);
+
 		const filteredTrips =
 			status === CardStatus.all ? data : filterTrips(status, data);
-		const filteredQueryKey =
-			status === CardStatus.all
-				? ['getAllTrips', {}]
-				: ['getAllTrips', {status}];
-		queryClient.setQueryData(filteredQueryKey, filteredTrips);
+
+		const result =
+			Array.isArray(searchedTrips) && searchedTrips.length > 0
+				? filteredTrips.filter((filteredTrip) =>
+						searchedTrips
+							.map(({id, title}) => id + title)
+							.includes(filteredTrip.id + filteredTrip.title),
+					)
+				: filteredTrips;
+		queryClient.setQueryData(['getFilteredTrips', status], result);
 	};
 
 	return {fetchTrips};

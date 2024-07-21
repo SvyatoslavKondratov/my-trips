@@ -30,7 +30,7 @@ export function Search() {
 								textTransform: 'none',
 							}}
 							onClick={async () => {
-								if (searchQuery.length > 2 || searchQuery === '') {
+								if (searchQuery.length > 2) {
 									await search(searchQuery);
 								}
 							}}
@@ -40,8 +40,14 @@ export function Search() {
 					</InputAdornment>
 				}
 				value={searchQuery}
-				onChange={(event) => {
-					setSearchQuery(event.target.value);
+				onChange={async (event) => {
+					const {
+						target: {value},
+					} = event;
+					setSearchQuery(value);
+					if (value === '') {
+						await search(value);
+					}
 				}}
 			/>
 		</Grid>

@@ -12,11 +12,11 @@ import {useDeleteTripMutation} from '../../hooks/useDeleteTripMutation';
 import {useGetTrips} from '@/app/hooks/useGetTrips';
 
 export default function CardList({status}: {status: CardStatus}) {
-	const queries = [{}, {status: CardStatus.done}, {status: CardStatus.todo}];
+	const queries = [CardStatus.all, CardStatus.done, CardStatus.todo];
 
 	const combinedQueries = useQueries({
 		queries: queries.map((query) => ({
-			queryKey: ['getAllTrips', query],
+			queryKey: ['getFilteredTrips', query],
 		})),
 		combine(results) {
 			return {
@@ -28,13 +28,27 @@ export default function CardList({status}: {status: CardStatus}) {
 	});
 
 	const {data = [], error, isLoading} = combinedQueries;
-	// Const data = dataObject[status];
+	console.log('combinedQueries', combinedQueries);
 
-	const tripData = data.find((trips) =>
-		status === CardStatus.all && trips
-			? trips[0]
-			: trips?.every((trip) => trip.status === status),
-	)!;
+	const tripObject = {
+		[CardStatus.all]: (statusArray: CardStatus[]) =>
+			statusArray?.every((item) =>
+				[CardStatus.done, CardStatus.todo].includes(item),
+			),
+		[CardStatus.done]: (statusArray: CardStatus[]) =>
+			statusArray?.every((item) => item === status),
+		[CardStatus.todo]: (statusArray: CardStatus[]) =>
+			statusArray?.every((item) => item === status),
+	};
+
+	let tripData = [] as AllTripsCardType[];
+	for (const trips of data) {
+		const statusArray = trips?.map(({status}) => status);
+		if (statusArray?.length > 0 && tripObject[status](statusArray)) {
+			tripData = trips;
+			break;
+		}
+	}
 
 	const {fetchTrips} = useGetTrips();
 
@@ -43,7 +57,6 @@ export default function CardList({status}: {status: CardStatus}) {
 		filters: {status: 'success'},
 	});
 	const [openTripId, setOpenTripId] = useState<string | undefined>();
-	console.log('successMutation', successMutation);
 
 	useEffect(() => {
 		const getTrips = async () => {
