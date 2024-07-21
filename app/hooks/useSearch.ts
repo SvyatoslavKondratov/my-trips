@@ -19,7 +19,7 @@ export function useSearch() {
 				item.title.includes(searchQuery) ||
 				item.description.includes(searchQuery),
 		);
-		queryClient.setQueriesData({queryKey, type: 'inactive'}, value);
+		queryClient.setQueriesData({queryKey, type: 'all'}, value);
 	};
 
 	return {search};
