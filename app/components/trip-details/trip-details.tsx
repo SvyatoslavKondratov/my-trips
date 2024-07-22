@@ -44,7 +44,7 @@ export function TripDetails({open, handleClose, trip}: TripDetailsType) {
 					overflow: 'scroll',
 				}}
 				justifyContent="center"
-				maxWidth="48%"
+				maxWidth="640"
 			>
 				<Grid
 					container
