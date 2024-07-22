@@ -135,7 +135,7 @@ export default function CardList({status}: {status: TripStatus}) {
 							handleClose={() => {
 								setOpenTripId(undefined);
 							}}
-							trip={tripData.find(({id, title}) => openTripId === id + title)!}
+							openTripId={openTripId}
 						/>
 					)}
 					{openEditId && (
