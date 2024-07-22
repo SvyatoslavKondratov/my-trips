@@ -41,6 +41,7 @@ export function CreateTrip({open, trip, handleClose}: CreateTripType) {
 					width: '100%',
 					'& .MuiPaper-root': {
 						width: '100%',
+						borderRadius: 5,
 					},
 				},
 			}}
