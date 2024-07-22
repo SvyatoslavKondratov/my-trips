@@ -4,6 +4,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button, {type ButtonOwnProps} from '@mui/material/Button';
 import {type ReactNode} from 'react';
+import {textFieldStyles} from '@/app/constants/fonts';
 
 export type DialogAction = {
 	text: string;
@@ -30,15 +31,16 @@ export default function DialogPopup({
 	children,
 }: DialogPopupProps) {
 	return (
-		<Dialog open={isOpen} data-testid="dialog-popup" onClose={onClose}>
-			<DialogTitle>{title}</DialogTitle>
-			<DialogContent sx={{width: `450px`}}>{children}</DialogContent>
+		<Dialog fullWidth maxWidth="md" open={isOpen} onClose={onClose}>
+			<DialogTitle sx={{...textFieldStyles}}>{title}</DialogTitle>
+			<DialogContent sx={{width: '100%'}}>{children}</DialogContent>
 			<DialogActions sx={{paddingInline: 2}}>
 				{actions.map((action) => (
 					<Button
 						key={action.text}
 						variant="outlined"
 						color="secondary"
+						sx={{...textFieldStyles}}
 						onClick={action.onClick}
 					>
 						{action.text}
