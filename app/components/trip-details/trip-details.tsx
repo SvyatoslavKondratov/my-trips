@@ -1,16 +1,17 @@
 /* eslint-disable n/file-extension-in-import */
 import {
 	ButtonBase,
+	CircularProgress,
 	Dialog,
 	DialogContent,
 	Grid,
-	Modal,
 	Typography,
 } from '@mui/material';
 import Image from 'next/image';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
+import {useQuery} from '@tanstack/react-query';
 import {TripTimeline} from '../triptimeline/trip-timeline';
 import {useDialog} from '@/app/hooks/useDialog';
 import {useTripDetailsMutation} from '@/app/hooks/useTripDetailsMutation';
@@ -19,28 +20,28 @@ import {type TripType, TripStatus} from '@/app/types/card-types';
 type TripDetailsType = {
 	// eslint-disable-next-line react/boolean-prop-naming
 	open: boolean;
-	trip: TripType;
+	openTripId: string;
 	handleClose: () => void;
 };
 
-export function TripDetails({open, handleClose, trip}: TripDetailsType) {
+export function TripDetails({open, handleClose, openTripId}: TripDetailsType) {
+	const {data, isPending} = useQuery<TripType[]>({queryKey: ['getAllTrips']});
 	const {showDialog, hideDialog, DialogPopup} = useDialog();
 	const mutation = useTripDetailsMutation();
+	if (isPending) {
+		return <CircularProgress size="large" />;
+	}
+
+	if (!data) {
+		return 'No data!';
+	}
+
+	const trip = data.find(({id, title}) => id + title === openTripId)!;
 
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	const {photo_url, title, description, itinerary} = trip;
+	const {photo_url, title, description, itinerary, status} = trip;
 
 	return (
-		// <Modal
-		// 	open={open}
-		// 	sx={{
-		// 		display: 'flex',
-		// 		alignItems: 'center',
-		// 		justifyContent: 'center',
-		// 		overflow: 'scroll',
-		// 	}}
-		// 	onClose={handleClose}
-		// >
 		<Dialog
 			fullWidth
 			open={open}
@@ -113,39 +114,22 @@ export function TripDetails({open, handleClose, trip}: TripDetailsType) {
 						>
 							<Typography variant="h3">{title}</Typography>
 							<ButtonBase sx={{marginBottom: 4}} onClick={showDialog}>
-								{trip.status === TripStatus.todo ? (
-									<Grid
-										container
-										item
-										alignItems="flex-end"
-										justifyContent="flex-start"
-									>
-										<CheckCircleOutlineIcon fontSize="small" htmlColor="gray" />
-										<Typography
-											variant="subtitle2"
-											ml={2}
-											sx={{textAlign: 'center'}}
-										>
-											Mark as completed
-										</Typography>
-									</Grid>
-								) : (
-									<Grid
-										container
-										item
-										alignItems="flex-end"
-										justifyContent="flex-start"
-									>
-										<CheckCircleIcon fontSize="small" htmlColor="green" />
-										<Typography
-											variant="subtitle2"
-											ml={2}
-											sx={{textAlign: 'center'}}
-										>
-											Complete
-										</Typography>
-									</Grid>
-								)}
+								<Grid
+									container
+									item
+									alignItems="center"
+									justifyContent="flex-start"
+								>
+									<CheckCircleOutlineIcon
+										fontSize="small"
+										htmlColor={status === TripStatus.todo ? 'gray' : 'green'}
+									/>
+									<Typography variant="subtitle2" ml={1}>
+										{status === TripStatus.todo
+											? 'Mark as completed'
+											: 'Complete'}
+									</Typography>
+								</Grid>
 							</ButtonBase>
 							<Typography variant="subtitle2">{description}</Typography>
 						</Grid>
