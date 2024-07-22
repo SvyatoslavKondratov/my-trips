@@ -4,7 +4,6 @@ import Image from 'next/image';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
-import {useQuery} from '@tanstack/react-query';
 import {TripTimeline} from '../triptimeline/trip-timeline';
 import {useDialog} from '@/app/hooks/useDialog';
 import {useTripDetailsMutation} from '@/app/hooks/useTripDetailsMutation';
@@ -18,7 +17,6 @@ type TripDetailsType = {
 };
 
 export function TripDetails({open, handleClose, trip}: TripDetailsType) {
-	// Const {data} = useQuery<TripType[]>({queryKey: ['getAllTrips']});
 	const {showDialog, hideDialog, DialogPopup} = useDialog();
 	const mutation = useTripDetailsMutation();
 
@@ -46,7 +44,7 @@ export function TripDetails({open, handleClose, trip}: TripDetailsType) {
 					overflow: 'scroll',
 				}}
 				justifyContent="center"
-				maxWidth={640}
+				maxWidth="48%"
 			>
 				<Grid
 					container

@@ -1,6 +1,6 @@
 import {createTheme} from '@mui/material';
 // eslint-disable-next-line n/file-extension-in-import
-import {typographyStyles} from '../constants/fonts';
+import {textFieldStyles, typographyStyles} from '../constants/fonts';
 
 const primary = {
 	main: '#3f50b5',
@@ -24,4 +24,15 @@ export const lightTheme = createTheme({
 		secondary,
 	},
 	typography: {...typographyStyles},
+	components: {
+		MuiTextField: {
+			styleOverrides: {
+				root: {
+					'& .MuiInputBase-root, & .MuiInputLabel-root, &.MuiTextField-root': {
+						...textFieldStyles,
+					},
+				},
+			},
+		},
+	},
 });

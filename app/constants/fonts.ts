@@ -1,7 +1,7 @@
 import type {TypographyOptions} from '@mui/material/styles/createTypography';
 import localFont from 'next/font/local';
 
-const defaultFont = localFont({
+export const defaultFont = localFont({
 	src: [
 		{
 			path: '../../public/fonts/oakes-grotesk-regular.woff2',
@@ -10,6 +10,14 @@ const defaultFont = localFont({
 		},
 	],
 });
+
+export const textFieldStyles = {
+	fontFamily: defaultFont.style.fontFamily,
+	fontSize: '0.926vmax',
+	fontStyle: 'normal',
+	fontWeight: 400,
+	lineHeight: '1.389vmax',
+};
 
 export const typographyStyles: TypographyOptions = {
 	fontFamily: defaultFont.style.fontFamily,

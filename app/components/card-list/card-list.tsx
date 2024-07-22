@@ -3,16 +3,13 @@
 'use client';
 import * as React from 'react';
 import {CircularProgress, Grid, Typography} from '@mui/material';
-import {
-	useIsFetching,
-	useMutationState,
-	useQueries,
-} from '@tanstack/react-query';
+import {useMutationState, useQueries} from '@tanstack/react-query';
 import {useState, useEffect} from 'react';
 import AllTripsCard from '../cards/all/all-trips-card';
 import {TripStatus, type TripType} from '../../types/card-types';
 import {TripDetails} from '../trip-details/trip-details';
 import {useDeleteTripMutation} from '../../hooks/useDeleteTripMutation';
+import {CreateTrip} from '../create-trip/create-trip';
 import {useGetTrips} from '@/app/hooks/useGetTrips';
 
 export default function CardList({status}: {status: TripStatus}) {
@@ -32,7 +29,6 @@ export default function CardList({status}: {status: TripStatus}) {
 	});
 
 	const {data = [], isLoading, error} = combinedQueries;
-	console.log('combinedQueries', combinedQueries, 'isLoading', isLoading);
 
 	const tripObject = {
 		[TripStatus.all]: (statusArray: TripStatus[]) =>
@@ -61,6 +57,7 @@ export default function CardList({status}: {status: TripStatus}) {
 		filters: {status: 'success'},
 	});
 	const [openTripId, setOpenTripId] = useState<string | undefined>();
+	const [openEditId, setOpenEditId] = useState<string | undefined>();
 
 	useEffect(() => {
 		const getTrips = async () => {
@@ -123,6 +120,9 @@ export default function CardList({status}: {status: TripStatus}) {
 								openTripDetails={() => {
 									setOpenTripId(id + title);
 								}}
+								onEdit={() => {
+									setOpenEditId(id + title);
+								}}
 								onDelete={() => {
 									mutation.mutate({id});
 								}}
@@ -136,6 +136,15 @@ export default function CardList({status}: {status: TripStatus}) {
 								setOpenTripId(undefined);
 							}}
 							trip={tripData.find(({id, title}) => openTripId === id + title)!}
+						/>
+					)}
+					{openEditId && (
+						<CreateTrip
+							open={Boolean(openEditId)}
+							handleClose={() => {
+								setOpenEditId(undefined);
+							}}
+							trip={tripData.find(({id, title}) => openEditId === id + title)}
 						/>
 					)}
 				</Grid>

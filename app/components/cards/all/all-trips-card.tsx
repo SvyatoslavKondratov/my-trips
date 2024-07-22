@@ -7,10 +7,12 @@ export default function AllTripsCard(
 	data: Pick<TripType, 'title' | 'description' | 'photo_url'> & {
 		openTripDetails: () => void;
 		onDelete: () => void;
+		onEdit: () => void;
 	},
 ) {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	const {title, description, photo_url, openTripDetails, onDelete} = data;
+	const {title, description, photo_url, openTripDetails, onDelete, onEdit} =
+		data;
 	const {showDialog, hideDialog, DialogPopup} = useDialog();
 	return (
 		<Grid
@@ -79,8 +81,7 @@ export default function AllTripsCard(
 							variant="subtitle2"
 							underline="always"
 							sx={{marginRight: 2}}
-							// eslint-disable-next-line @typescript-eslint/no-empty-function
-							onClick={() => {}}
+							onClick={onEdit}
 						>
 							Edit
 						</Link>
