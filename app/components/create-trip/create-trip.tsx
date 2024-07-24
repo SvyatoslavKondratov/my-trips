@@ -1,6 +1,7 @@
 /* eslint-disable n/file-extension-in-import */
 import {
 	Button,
+	ButtonBase,
 	Dialog,
 	DialogContent,
 	Grid,
@@ -10,8 +11,14 @@ import {
 } from '@mui/material';
 import React, {useState} from 'react';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import {zodResolver} from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import {Controller, useFieldArray, useForm} from 'react-hook-form';
+import * as R from 'rambda';
+import CancelIcon from '@mui/icons-material/Cancel';
 import {ItineraryItem} from './itinerary-item';
 import {type Itinerary, type TripType} from '@/app/types/card-types';
+import {useUpdateTripMutation} from '@/app/hooks/useUpdateTripMutation';
 
 type CreateTripType = {
 	// eslint-disable-next-line react/boolean-prop-naming
@@ -20,12 +27,63 @@ type CreateTripType = {
 	handleClose: () => void;
 };
 
+const schema = z.object({
+	title: z.string().min(3, {message: 'Required'}),
+	descritpion: z.string().optional(),
+	photoUrl: z.string(),
+	itinerary: z
+		.object({
+			day: z.number(),
+			location: z.string(),
+			descritpion: z.string().optional(),
+		})
+		.array(),
+});
+
 export function CreateTrip({open, trip, handleClose}: CreateTripType) {
 	const isEdit = Boolean(trip);
 	const title = isEdit ? 'Edit trip' : 'Create trip';
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	const {title: tripTitle, description, photo_url, itinerary} = trip ?? {};
-	const [itineraryState, setItineraryState] = useState(itinerary ?? []);
+	const {title: tripTitle, description, photo_url, itinerary, id} = trip ?? {};
+
+	const {
+		register,
+		formState: {errors, isDirty, isValid, dirtyFields},
+		control,
+		handleSubmit,
+		watch,
+		getValues,
+	} = useForm({
+		resolver: zodResolver(schema),
+		defaultValues: {
+			title: tripTitle,
+			description,
+			photoUrl: photo_url,
+			itinerary,
+		},
+		mode: 'onTouched',
+	});
+	const {fields, append} = useFieldArray({
+		control,
+		name: 'itinerary',
+	});
+	const mutation = useUpdateTripMutation();
+
+	const onSubmit = handleSubmit(
+		(data) => {
+			if (!isDirty) return;
+			if (id) {
+				const description = getValues('description');
+				console.log('data', data);
+				mutation.mutate({id, trip: {...data, description}});
+				handleClose();
+			}
+		},
+		(error) => {
+			console.log('Error', error);
+		},
+	);
+
 	return (
 		<Dialog
 			fullWidth
@@ -60,24 +118,43 @@ export function CreateTrip({open, trip, handleClose}: CreateTripType) {
 					justifyContent="center"
 					gap={2}
 				>
-					<Typography variant="h3">{title}</Typography>
+					<Grid container item justifyContent="space-between" mb={2}>
+						<Typography variant="h3">{title}</Typography>
+						<ButtonBase onClick={handleClose}>
+							<CancelIcon fontSize="large" />
+						</ButtonBase>
+					</Grid>
 					<TextField
-						placeholder="Italy"
+						id="title"
+						placeholder="Title"
+						{...register('title')}
+						value={watch('title')}
+						data-testid="title-input"
+						error={Boolean(errors.title)}
+						helperText={errors.title?.message}
 						label="Name"
-						defaultValue={tripTitle}
 						variant="outlined"
 					/>
 					<TextField
 						multiline
+						id="description"
 						placeholder="Discover the wonders of the Roman empire..."
 						label="Description"
-						defaultValue={description}
+						{...register('description')}
+						value={watch('description')}
+						data-testid="description-input"
+						error={Boolean(errors.description)}
+						helperText={errors.description?.message}
 						variant="outlined"
 					/>
 					<TextField
 						placeholder="Image URL"
 						label="Image"
-						defaultValue={photo_url}
+						{...register('photoUrl')}
+						value={watch('photoUrl')}
+						data-testid="photoUrl-input"
+						error={Boolean(errors.photoUrl)}
+						helperText={errors.photoUrl?.message}
 						variant="outlined"
 					/>
 					<Grid
@@ -89,16 +166,39 @@ export function CreateTrip({open, trip, handleClose}: CreateTripType) {
 						<Typography variant="subtitle2">Day by day itinerary</Typography>
 						<IconButton
 							onClick={() => {
-								const items = [...itineraryState];
-								items.push({} as Itinerary);
-								setItineraryState(items);
+								const lastDay = R.pipe(
+									R.defaultTo([{day: 1}]),
+									R.pluck('day'),
+									R.last,
+								)(itinerary) as number;
+								const day = lastDay + 1;
+								append({
+									day,
+									description: '',
+									location: '',
+								});
 							}}
 						>
 							<AddCircleOutlineOutlinedIcon fontSize="small" />
 						</IconButton>
 					</Grid>
-					{itineraryState.map((itineraryItem) => (
-						<ItineraryItem key={itineraryItem.day} itinerary={itineraryItem} />
+					{fields.map((field, index) => (
+						<Controller
+							key={field.id}
+							render={({
+								field: {name, value, onBlur, onChange},
+								fieldState: {error},
+							}) => (
+								<ItineraryItem
+									value={value}
+									name={name}
+									hasError={Boolean(error)}
+									onChange={onChange}
+								/>
+							)}
+							name={`itinerary.${index}`}
+							control={control}
+						/>
 					))}
 					<Grid container item>
 						<Button
@@ -110,6 +210,7 @@ export function CreateTrip({open, trip, handleClose}: CreateTripType) {
 								borderRadius: 5,
 								textTransform: 'capitalize',
 							}}
+							onClick={onSubmit}
 						>
 							<Typography variant="subtitle2">Save</Typography>
 						</Button>

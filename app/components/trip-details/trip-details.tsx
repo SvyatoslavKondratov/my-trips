@@ -9,7 +9,6 @@ import {
 } from '@mui/material';
 import Image from 'next/image';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import {useQuery} from '@tanstack/react-query';
 import {TripTimeline} from '../triptimeline/trip-timeline';
