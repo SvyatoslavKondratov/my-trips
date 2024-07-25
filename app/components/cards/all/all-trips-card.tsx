@@ -28,7 +28,15 @@ export default function AllTripsCard(
 				marginBottom: 2,
 			}}
 		>
-			<Grid container item position="relative" md={5.5} sm={5.5} xs={4.9}>
+			<Grid
+				container
+				item
+				position="relative"
+				md={5.5}
+				sm={5.5}
+				xs={4.9}
+				data-testid="image-container"
+			>
 				<Image
 					fill
 					sizes="100vw"
@@ -67,6 +75,7 @@ export default function AllTripsCard(
 						component="button"
 						variant="subtitle2"
 						underline="always"
+						data-testid="trip-details"
 						onClick={openTripDetails}
 					>
 						See trip details
