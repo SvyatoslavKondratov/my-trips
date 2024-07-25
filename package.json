@@ -57,10 +57,5 @@
     "storybook": "^8.2.6",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
-  },
-  "eslintConfig": {
-    "extends": [
-      "plugin:storybook/recommended"
-    ]
   }
 }
