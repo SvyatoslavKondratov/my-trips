@@ -6,6 +6,8 @@ import {
 	DialogContent,
 	Grid,
 	Typography,
+	useMediaQuery,
+	useTheme,
 } from '@mui/material';
 import Image from 'next/image';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -24,6 +26,9 @@ type TripDetailsType = {
 };
 
 export function TripDetails({open, handleClose, openTripId}: TripDetailsType) {
+	const theme = useTheme();
+	const isXs = useMediaQuery(theme.breakpoints.down('sm'));
+	const isSm = useMediaQuery(theme.breakpoints.between('xs', 'md'));
 	const {data, isPending} = useQuery<TripType[]>({queryKey: ['getAllTrips']});
 	const {showDialog, hideDialog, DialogPopup} = useDialog();
 	const mutation = useTripDetailsMutation();
@@ -84,7 +89,9 @@ export function TripDetails({open, handleClose, openTripId}: TripDetailsType) {
 							pt={2}
 						>
 							<ButtonBase onClick={handleClose}>
-								<CancelIcon fontSize="small" />
+								<CancelIcon
+									fontSize={isXs ? 'small' : isSm ? 'medium' : 'large'}
+								/>
 							</ButtonBase>
 						</Grid>
 						<Image

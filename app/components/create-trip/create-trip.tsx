@@ -8,16 +8,18 @@ import {
 	IconButton,
 	TextField,
 	Typography,
+	useMediaQuery,
+	useTheme,
 } from '@mui/material';
-import React, {useState} from 'react';
+import React from 'react';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import {zodResolver} from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import {Controller, useFieldArray, useForm} from 'react-hook-form';
 import * as R from 'rambda';
 import CancelIcon from '@mui/icons-material/Cancel';
-import {ItineraryItem} from './itinerary-item';
-import {type Itinerary, type TripType} from '@/app/types/card-types';
+import {type ItineraryError, ItineraryItem} from './itinerary-item';
+import {type TripType} from '@/app/types/card-types';
 import {useUpdateTripMutation} from '@/app/hooks/useUpdateTripMutation';
 
 type CreateTripType = {
@@ -29,13 +31,13 @@ type CreateTripType = {
 
 const schema = z.object({
 	title: z.string().min(3, {message: 'Required'}),
-	descritpion: z.string().optional(),
-	photoUrl: z.string(),
+	description: z.string().min(3, {message: 'Required'}),
+	photoUrl: z.string().min(3, {message: 'Required'}),
 	itinerary: z
 		.object({
-			day: z.number(),
-			location: z.string(),
-			descritpion: z.string().optional(),
+			day: z.number().min(1, {message: 'Required'}),
+			location: z.string().min(3, {message: 'Required'}),
+			description: z.string().min(3, {message: 'Required'}),
 		})
 		.array(),
 });
@@ -43,12 +45,15 @@ const schema = z.object({
 export function CreateTrip({open, trip, handleClose}: CreateTripType) {
 	const isEdit = Boolean(trip);
 	const title = isEdit ? 'Edit trip' : 'Create trip';
+	const theme = useTheme();
+	const isXs = useMediaQuery(theme.breakpoints.down('sm'));
+	const isSm = useMediaQuery(theme.breakpoints.between('xs', 'md'));
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	const {title: tripTitle, description, photo_url, itinerary, id} = trip ?? {};
 
 	const {
 		register,
-		formState: {errors, isDirty, isValid, dirtyFields},
+		formState: {errors, isDirty},
 		control,
 		handleSubmit,
 		watch,
@@ -67,15 +72,15 @@ export function CreateTrip({open, trip, handleClose}: CreateTripType) {
 		control,
 		name: 'itinerary',
 	});
+
 	const mutation = useUpdateTripMutation();
 
 	const onSubmit = handleSubmit(
 		(data) => {
 			if (!isDirty) return;
 			if (id) {
-				const description = getValues('description');
 				console.log('data', data);
-				mutation.mutate({id, trip: {...data, description}});
+				mutation.mutate({id, trip: data});
 				handleClose();
 			}
 		},
@@ -118,10 +123,18 @@ export function CreateTrip({open, trip, handleClose}: CreateTripType) {
 					justifyContent="center"
 					gap={2}
 				>
-					<Grid container item justifyContent="space-between" mb={2}>
+					<Grid
+						container
+						item
+						justifyContent="space-between"
+						mb={2}
+						alignItems="center"
+					>
 						<Typography variant="h3">{title}</Typography>
 						<ButtonBase onClick={handleClose}>
-							<CancelIcon fontSize="large" />
+							<CancelIcon
+								fontSize={isXs ? 'small' : isSm ? 'medium' : 'large'}
+							/>
 						</ButtonBase>
 					</Grid>
 					<TextField
@@ -166,11 +179,12 @@ export function CreateTrip({open, trip, handleClose}: CreateTripType) {
 						<Typography variant="subtitle2">Day by day itinerary</Typography>
 						<IconButton
 							onClick={() => {
+								const formItinerary = getValues('itinerary');
 								const lastDay = R.pipe(
 									R.defaultTo([{day: 1}]),
 									R.pluck('day'),
 									R.last,
-								)(itinerary) as number;
+								)(formItinerary) as number;
 								const day = lastDay + 1;
 								append({
 									day,
@@ -186,14 +200,15 @@ export function CreateTrip({open, trip, handleClose}: CreateTripType) {
 						<Controller
 							key={field.id}
 							render={({
-								field: {name, value, onBlur, onChange},
+								field: {value, onBlur, onChange},
 								fieldState: {error},
 							}) => (
 								<ItineraryItem
 									value={value}
-									name={name}
 									hasError={Boolean(error)}
+									error={error as ItineraryError}
 									onChange={onChange}
+									onBlur={onBlur}
 								/>
 							)}
 							name={`itinerary.${index}`}
