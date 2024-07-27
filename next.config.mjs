@@ -11,6 +11,7 @@ const nextConfig = {
           },
         ],
       },
+    basePath: '/github-pages',
 };
 
 export default nextConfig;
