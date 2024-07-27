@@ -17,7 +17,7 @@ export default function ReactQueryClientProvider({
 				enabled: false,
 				refetchOnMount: false,
 				async queryFn() {
-					const response = await fetch(`${BASE_URL}/travels`);
+					const response = await fetch(`/api/travels`);
 					return response.json();
 				},
 				select(data) {

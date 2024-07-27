@@ -9,7 +9,7 @@ export const useUpdateTripMutation = () => {
 		mutationKey: ['update'],
 		async mutationFn(data: {id: number; trip: Partial<TripType>}) {
 			const {id, trip} = data;
-			const response = await fetch(`${BASE_URL}/travels/${id}`, {
+			const response = await fetch(`api/travels/${id}`, {
 				method: 'PUT',
 				headers: {
 					// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -19,7 +19,6 @@ export const useUpdateTripMutation = () => {
 			});
 			return response.json();
 		},
-		// TODO fix description issue during editing trip, now it's not sent
 		onSuccess(response: TripType) {
 			const data = queryClient.getQueryData<TripType[]>(['getAllTrips']);
 			queryClient.setQueriesData(

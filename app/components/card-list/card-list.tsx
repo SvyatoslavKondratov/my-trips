@@ -84,7 +84,11 @@ export default function CardList({status}: {status: TripStatus}) {
 
 	// TODO reconsider this
 	if (isLoading) {
-		return <CircularProgress size={20} />;
+		return (
+			<Grid container justifyContent="center">
+				<CircularProgress size={20} />
+			</Grid>
+		);
 	}
 
 	return (
